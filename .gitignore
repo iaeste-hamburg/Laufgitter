@@ -14,3 +14,4 @@ work/
 .laufgitter_state/
 config.toml
 
+.python-version
