@@ -1,13 +1,14 @@
 {
   "run_name": "phase2-author-antigravity-engine",
-  "workdir": "/tmp/laufgitter-phase2",
+  "workdir": "/Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase2",
+  "max_parallel": 1,
   "tasks": [
     {
       "key": "write-antigravity-engine-config",
       "engine": "opencode",
       "model": "gpt-5.4",
       "task_type": "docs",
-      "spec": "Read /tmp/laufgitter-phase1/research-antigravity-cli/antigravity-cli-facts.json. Using ONLY facts present there (do not invent flags not in that file), write a TOML file antigravity-engine-block.toml containing a single [engines.antigravity] table matching this schema exactly: bin, args_template (argv array using {taskdir}, {spec}, {access_args}, {model}, {engine_args} placeholders), sandbox_args, full_access_args, model_default. Model default must be 'gemini-3.8-medium'. Add a comment above each line naming which facts-file field justified it.",
+      "spec": "Your task is to author the engine configuration TOML block for the Antigravity CLI ('agy') based strictly on verified research facts. Inspect the facts file located at: /Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase1/research-antigravity-cli/antigravity-cli-facts.json. Using ONLY facts present in that file (do not hallucinate or invent flags not present in that file), write a TOML file named antigravity-engine-block.toml. The output must contain a single [engines.antigravity] table adhering to this exact structure: bin, args_template (argv array using {taskdir}, {spec}, {access_args}, {model}, and {engine_args} placeholders), sandbox_args, full_access_args, and model_default. The model_default field must be set to 'gemini-3.8-medium'. Above each configuration key, provide a comment explicitly stating which field from the facts file justified the setting.",
       "check": "python3 -c \"import tomllib; d=tomllib.load(open('antigravity-engine-block.toml','rb')); e=d['engines']['antigravity']; required=['bin','args_template','sandbox_args','full_access_args','model_default']; missing=[k for k in required if k not in e]; assert not missing, f'FAIL: missing {missing}'; assert '{spec}' in e['args_template'], 'FAIL: no {spec} placeholder'; assert '{model}' in ' '.join(e['args_template']), 'FAIL: no {model} placeholder'; print('OK')\"",
       "expect_files": ["antigravity-engine-block.toml"],
       "verified": "Confirms a syntactically valid [engines.antigravity] TOML block with all required keys and placeholders was produced from sourced facts, not invention.",

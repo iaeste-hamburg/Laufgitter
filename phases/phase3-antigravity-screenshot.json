@@ -1,6 +1,6 @@
 {
   "run_name": "phase3-antigravity-screenshot",
-  "workdir": "/tmp/laufgitter-phase3",
+  "workdir": "/Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase3",
   "max_parallel": 1,
   "tasks": [
     {
@@ -20,8 +20,8 @@
       "model": "gemini-3.8-medium",
       "task_type": "code-feature",
       "engine_args": ["--dangerously-skip-permissions", "--sandbox"],
-      "spec": "Read /tmp/laufgitter-phase3/write-contract/contract.json for the exact artifact requirements, then use your available MCP tools to capture the screenshot it describes. Save the result to screenshot.png in this task directory, matching or exceeding the min_width/min_height from the contract.",
-      "check": "python3 -c \"import json; from PIL import Image; c=json.load(open('/tmp/laufgitter-phase3/write-contract/contract.json')); img=Image.open('screenshot.png'); w,h=img.size; assert w>=c['min_width'] and h>=c['min_height'], f'FAIL: {w}x{h} smaller than contract minimum {c[\\\"min_width\\\"]}x{c[\\\"min_height\\\"]}'; print('OK')\"; cp screenshot.png /tmp/laufgitter-phase3/artifacts-out/ 2>/dev/null || true",
+      "spec": "Execute the artifact generation according to the contract specification. You must first inspect the contract details located at: /Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase3/write-contract/contract.json to determine the exact image dimensions and artifact requirements. Once inspected, utilize your available MCP tools to capture the screenshot meeting or exceeding the min_width and min_height specified by the contract. Save the resulting image as screenshot.png in this current task directory. Ensure the file is a valid PNG image data format.",
+      "check": "python3 -c \"import json; from PIL import Image; c=json.load(open('/Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase3/write-contract/contract.json')); img=Image.open('screenshot.png'); w,h=img.size; assert w>=c['min_width'] and h>=c['min_height'], f'FAIL: {w}x{h} smaller than contract minimum {c[\\\"min_width\\\"]}x{c[\\\"min_height\\\"]}'; print('OK')\"; mkdir -p /Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase3/artifacts-out && cp screenshot.png /Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase3/artifacts-out/ 2>/dev/null || true",
       "expect_files": ["screenshot.png"],
       "worktrees": false,
       "verified": "Confirms screenshot.png exists, is a valid image, and meets the minimum dimensions gpt-5.4's contract declared — not just that a file exists.",

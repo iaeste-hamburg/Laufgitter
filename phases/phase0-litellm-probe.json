@@ -1,6 +1,7 @@
 {
   "run_name": "phase0-litellm-probe",
-  "workdir": "/tmp/laufgitter-phase0",
+  "workdir": "/Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase0",
+  "max_parallel": 1,
   "tasks": [
     {
       "key": "gpt54-routing-probe",
@@ -9,7 +10,7 @@
       "task_type": "probe",
       "spec": "Reply with exactly one line: ROUTING_OK <the model identity string your provider backend reports for this request>. Do not add anything else.",
       "check": "grep -q 'ROUTING_OK' worker.log || { echo 'FAIL: gpt-5.4 via litellm did not respond as expected'; exit 1; }",
-      "expect_files": [],
+      "expect_files": ["worker.log"],
       "verified": "Confirms OpenCode successfully reaches gpt-5.4 through the litellm proxy end to end.",
       "max_attempts": 1
     }

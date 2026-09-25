@@ -1,6 +1,7 @@
 {
   "run_name": "phase1-research-antigravity",
-  "workdir": "/tmp/laufgitter-phase1",
+  "workdir": "/Users/thedawgctor/Desktop/dawgctor-pai-agentspaces-v1/dawgctor-laufgitter/Laufgitter-feature-edits/work/phase1",
+  "max_parallel": 1,
   "tasks": [
     {
       "key": "research-antigravity-cli",

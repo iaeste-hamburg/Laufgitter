@@ -388,19 +388,9 @@ Four rules are baked into every worker invocation. They all cost us real debuggi
 3. **Verification executes the artifact** — an agent's own "done" is not evidence. Exit codes are.
 4. **Raw output only** — logs and eval rows carry verbatim worker output, never a summary. Anything that needs judgment reads the raw data.
 
-## Contributors
+## Contributing
 
-Every community PR that lands in main is credited here — that's a project rule, enforced by a test. Thank you:
-
-- [@iaeste-hamburg](https://github.com/iaeste-hamburg) — four-phase Antigravity integration workflow with contract-driven execution (#1)
-- [@le-dawg](https://github.com/le-dawg) — codebase renaming to Laufgitter and Zentrale, SSH commit signing configuration
-- [@Fiddlehead-MB](https://github.com/Fiddlehead-MB) (Melinda Byerley) — exact-byte demo checks, explicit newline instructions, and regression coverage (#101)
-- [@oceanonline](https://github.com/oceanonline) — portable `python3` in template checks + lint quickstart path fix (#24)
-- [@davekopecek](https://github.com/davekopecek) (Dave Kopecek) — committed the design-reference fixture so the design-token guard runs on every machine (#30)
-- [@snapsynapse](https://github.com/snapsynapse) (Sam Rogers) — graceful shutdown on SIGINT/SIGTERM with worker-tree cleanup and finished state, plus the 14-test end-to-end CLI regression suite (#4)
-- [@mlava](https://github.com/mlava) (Mark Lavercombe) — named setup failures across every diagnostic surface (#37), `run --baseline`, the no-workers check preflight (#38), guidance on check-writing failure modes (#57), and early warnings for missing worker commands (#59)
-
-Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the philosophy and what gets a PR merged fast. The short version: small and scoped, rebased on current main, every claim backed by an executed test. Authorship is always preserved — where a maintainer pushes a mechanical fix to your branch, you remain the commit author.
+Contributions that advance Laufgitter's core mission are welcomed. Please review [CONTRIBUTING.md](CONTRIBUTING.md) for architectural guidelines, development workflows, and review criteria. Submissions should be focused, rebased against current `main`, and accompanied by deterministic verification tests that demonstrate the validity of every change.
 
 ## License
 
