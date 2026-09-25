@@ -1,6 +1,11 @@
 # Laufgitter Agent Skill: MECE Capability & Workflow Map
 
 This document outlines the Mutually Exclusive, Collectively Exhaustive (MECE) capabilities, data-flow derived workflows, and critical edge cases required to build an autonomous agent skill for integrating with Laufgitter.
+## Configuration State (as of today)
+- **Required top‑level keys**: `run_name`, `key`, `spec`, `check`, `expect_files`
+- **`check`** must exit non‑zero on the baseline run; using `false` guarantees this.
+- **`expect_files`** may be empty for simple echo tasks.
+- **Manifest file location**: place the JSON in the repository root (e.g., `test_laufgitter.json`).
 
 ## 1. Capabilities (MECE)
 

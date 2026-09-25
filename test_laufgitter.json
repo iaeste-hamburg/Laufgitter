@@ -1,0 +1,7 @@
+{
+  "run_name": "test-run",
+  "key": "test",
+  "spec": "echo \"✅ Laufgitter test successful\"",
+  "check": "false",
+  "expect_files": []
+}
