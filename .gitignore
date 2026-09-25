@@ -15,3 +15,6 @@ work/
 config.toml
 
 .python-version
+.claude/
+AGENTS.md
+docs/
