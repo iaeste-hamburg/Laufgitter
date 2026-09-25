@@ -30,7 +30,7 @@ To ensure rapid review and seamless integration, pull requests should adhere to 
 3. **Deterministic Automated Verification:** Every functional claim must be backed by an executed test. Checks should provide clear, descriptive diagnostic messages on failure rather than silent non-zero exits.
 4. **Adherence to Architecture:**
    - Single-file, standard-library-only design for `laufgitter.py`.
-   - Supported Python version: Python 3.12+ (tested through 3.13).
+   - Supported Python version: Python 3.12+.
    - Immutable data models (`@dataclass(frozen=True)`).
    - Test suites organized under `tests/` and discoverable via `python3 -m unittest discover -s tests`.
    - Explicit environment guards (e.g., `LAUFGITTER_NO_SELF_UPDATE=1`) during automated test execution.

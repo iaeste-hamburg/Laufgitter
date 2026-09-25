@@ -394,7 +394,7 @@ Contributions that advance Laufgitter's core mission are welcomed. Please review
 
 ## License
 
-[PolyForm Shield 1.0.0](LICENSE.md) — free to use, modify, and share, including inside your own commercial work. The one thing you can't do is offer Laufgitter or Zentrale (or a derivative that competes with them) as a product or service of your own. Commercial rights to the tool itself belong to Nate Jones Media LLC.
+Laufgitter is available under the [MIT License](LICENSE.md).
 
 ## Requirements
 

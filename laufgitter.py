@@ -787,7 +787,7 @@ class EvalConfig:
 class ArtifactConfig:
     """Tier 0 zero-LLM HTML artifacts: live status page + final report + multi-run index.
 
-    See laufgitter-live-artifacts-plan.md. Templates support {run_id}, {run_name} substitutions.
+    See docs/laufgitter-live-artifacts-plan.md. Templates support {run_id}, {run_name} substitutions.
     """
 
     enabled: bool
