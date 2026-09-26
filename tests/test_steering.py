@@ -128,7 +128,7 @@ def write_profile(path: Path, *, model: str, version: str = "1.0.0") -> None:
     )
 
 
-def test_engine(model_default: str = "openrouter/z-ai/glm-5.2") -> EngineConfig:
+def make_engine(model_default: str = "openrouter/z-ai/glm-5.2") -> EngineConfig:
     return EngineConfig(
         name="mock",
         bin=sys.executable,
@@ -150,7 +150,7 @@ def make_config(root: Path, steering_dir: Path) -> AppConfig:
         hud_app_path=None,
         allow_full_access=False,
         eval=EvalConfig(backend="jsonl", jsonl_path=root / "eval.jsonl"),
-        engines={"mock": test_engine()},
+        engines={"mock": make_engine()},
         artifact=ArtifactConfig(
             enabled=False,
             out_template=str(root / "live.html"),
