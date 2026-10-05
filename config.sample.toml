@@ -176,11 +176,11 @@ model_report_regex = "(?m)^model:[ \\t]*([^ \\t\\r\\n]+)[ \\t]*\\r?$"
 # (or system agy). Headless mode (-p) runs the agentic loop non-interactively.
 # Sandbox mode uses `--sandbox` for terminal execution containment; full access mode
 # uses `--dangerously-skip-permissions` to auto-approve tool execution for headless runs.
-# Models: gemini-3.8-medium, gemini-3.8-high, gemini-2.5-flash (route with the per-task "model" field).
+# Models: gemini-3.8-flash-high, gemini-3.8-flash-medium, gemini-3.7-flash-low (route with the per-task "model" field).
 # Uncomment to enable.
 # [engines.antigravity]
 # bin = "agy"
-# model_default = "gemini-3.8-medium"
+# model_default = "gemini-3.8-flash-medium"
 # args_template = [
 #   "{access_args}",
 #   "--model",
