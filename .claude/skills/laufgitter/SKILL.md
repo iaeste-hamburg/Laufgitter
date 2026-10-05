@@ -223,6 +223,7 @@ Explain that `install-agent` is reversible and the hooks are gentle/non-blocking
 ## Platform adaptation
 - **Claude Code**: if the user has run `./laufgitter.py install-agent`, the Laufgitter skill and gentle hooks should be active user-level; if not, guide them to install it. `./laufgitter.py uninstall-agent` removes them. The hooks nudge; they do not block.
 - **Antigravity**: use `run_command` / `manage_task` to launch and monitor Laufgitter when the user explicitly wants the documented integration path.
+- **Unstoppable Code**: install via `./laufgitter.py install-agent --target unstoppable` (or `--project`); configure worker engines using the `[engines.unstoppable]` block in `config.toml`.
 - **Codex**: built-in default worker lane.
 - **OpenCode/OpenRouter**: supported local engine lane when the user wants a local/cheap universal harness.
 

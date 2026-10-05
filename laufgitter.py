@@ -10448,8 +10448,19 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parent
 
 
+def harness_root(target: str = "claude", project: bool = False) -> Path:
+    normalized = target.strip().lower()
+    if normalized in {"claude", "claudecode"}:
+        return (Path.cwd() if project else Path.home()) / ".claude"
+    if normalized in {"gemini", "antigravity", "agy"}:
+        return (Path.cwd() / ".gemini" / "skills") if project else (Path.home() / ".gemini" / "config" / "skills")
+    if normalized in {"unstoppable", "unstoppablecode", "unstoppable-code"}:
+        return (Path.cwd() if project else Path.home()) / ".unstoppable"
+    raise ValueError(f"unknown agent harness target: '{target}' (supported: claude, gemini, unstoppable)")
+
+
 def claude_root(project: bool) -> Path:
-    return (Path.cwd() if project else Path.home()) / ".claude"
+    return harness_root("claude", project=project)
 
 
 def laufgitter_skill_source() -> Path:
@@ -10566,61 +10577,77 @@ def remove_laufgitter_hooks(settings: dict[str, Any]) -> int:
     return removed
 
 
-def install_agent(project: bool = False) -> int:
-    root = claude_root(project)
+def install_agent(target: str = "claude", project: bool = False) -> int:
+    normalized = target.strip().lower()
+    root = harness_root(normalized, project=project)
     skill_source = laufgitter_skill_source()
-    skill_target = root / "skills" / "laufgitter" / "SKILL.md"
     if not skill_source.exists():
         raise ValueError(f"laufgitter skill source not found: {skill_source}")
+
+    if normalized in {"gemini", "antigravity", "agy"}:
+        skill_target = root / "laufgitter-agent" / "SKILL.md"
+    else:
+        skill_target = root / "skills" / "laufgitter" / "SKILL.md"
+
     skill_target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(skill_source, skill_target)
 
-    settings_path = root / "settings.json"
-    settings = load_settings(settings_path)
+    # Hooks configuration is supported for claude and unstoppable environments
     changed = False
-    changed |= merge_laufgitter_hook(
-        settings,
-        "PreToolUse",
-        "Bash",
-        laufgitter_hook_command("pre-bash"),
-    )
-    changed |= merge_laufgitter_hook(
-        settings,
-        "PostToolUse",
-        "Edit|Write",
-        laufgitter_hook_command("post-edit"),
-    )
-    if changed or not settings_path.exists():
-        write_settings(settings_path, settings)
+    settings_path: Path | None = None
+    if normalized in {"claude", "claudecode", "unstoppable", "unstoppablecode", "unstoppable-code"}:
+        settings_path = root / "settings.json"
+        settings = load_settings(settings_path)
+        changed |= merge_laufgitter_hook(
+            settings,
+            "PreToolUse",
+            "Bash",
+            laufgitter_hook_command("pre-bash"),
+        )
+        changed |= merge_laufgitter_hook(
+            settings,
+            "PostToolUse",
+            "Edit|Write",
+            laufgitter_hook_command("post-edit"),
+        )
+        if changed or not settings_path.exists():
+            write_settings(settings_path, settings)
 
     scope = "project" if project else "user"
-    print(f"Installed laufgitter agent for {scope} scope.")
+    print(f"Installed laufgitter agent for {scope} scope on target '{normalized}'.")
     print(f"Skill: {skill_target}")
-    if changed:
-        print(f"Hooks: added PreToolUse Bash and PostToolUse Edit|Write in {settings_path}")
-    else:
-        print(f"Hooks: already present in {settings_path}")
+    if settings_path is not None:
+        if changed:
+            print(f"Hooks: added PreToolUse Bash and PostToolUse Edit|Write in {settings_path}")
+        else:
+            print(f"Hooks: already present in {settings_path}")
     return 0
 
 
-def uninstall_agent(project: bool = False) -> int:
-    root = claude_root(project)
-    settings_path = root / "settings.json"
+def uninstall_agent(target: str = "claude", project: bool = False) -> int:
+    normalized = target.strip().lower()
+    root = harness_root(normalized, project=project)
     removed_hooks = 0
-    if settings_path.exists():
-        settings = load_settings(settings_path)
-        removed_hooks = remove_laufgitter_hooks(settings)
-        if removed_hooks:
-            write_settings(settings_path, settings)
+    if normalized in {"claude", "claudecode", "unstoppable", "unstoppablecode", "unstoppable-code"}:
+        settings_path = root / "settings.json"
+        if settings_path.exists():
+            settings = load_settings(settings_path)
+            removed_hooks = remove_laufgitter_hooks(settings)
+            if removed_hooks:
+                write_settings(settings_path, settings)
 
-    skill_dir = root / "skills" / "laufgitter"
+    if normalized in {"gemini", "antigravity", "agy"}:
+        skill_dir = root / "laufgitter-agent"
+    else:
+        skill_dir = root / "skills" / "laufgitter"
+
     removed_skill = False
     if skill_dir.exists():
         shutil.rmtree(skill_dir)
         removed_skill = True
 
     scope = "project" if project else "user"
-    print(f"Uninstalled laufgitter agent for {scope} scope.")
+    print(f"Uninstalled laufgitter agent for {scope} scope on target '{normalized}'.")
     print(f"Hooks removed: {removed_hooks}")
     print(f"Skill removed: {'yes' if removed_skill else 'no'}")
     return 0
@@ -11079,11 +11106,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     demo_parser.add_argument("--dry-run", action="store_true", help="print the demo plan without spawning codex")
 
-    install_parser = subparsers.add_parser("install-agent", help="install the laufgitter Claude Code skill and hooks")
-    install_parser.add_argument("--project", action="store_true", help="install into ./.claude instead of ~/.claude")
+    install_parser = subparsers.add_parser("install-agent", help="install the laufgitter agent skill and hooks")
+    install_parser.add_argument("--project", action="store_true", help="install into local project directory instead of user home directory")
+    install_parser.add_argument(
+        "--target",
+        default="claude",
+        help="target harness for skill/hooks installation (claude, gemini/antigravity, unstoppable; default: claude)",
+    )
 
-    uninstall_parser = subparsers.add_parser("uninstall-agent", help="remove the laufgitter Claude Code skill and hooks")
-    uninstall_parser.add_argument("--project", action="store_true", help="remove from ./.claude instead of ~/.claude")
+    uninstall_parser = subparsers.add_parser("uninstall-agent", help="remove the laufgitter agent skill and hooks")
+    uninstall_parser.add_argument("--project", action="store_true", help="remove from local project directory instead of user home directory")
+    uninstall_parser.add_argument(
+        "--target",
+        default="claude",
+        help="target harness for skill/hooks uninstallation (claude, gemini/antigravity, unstoppable; default: claude)",
+    )
     return parser
 
 
@@ -11129,9 +11166,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Self-update skipped: {result.reason or 'not available'}.")
             return 0
         if args.command == "install-agent":
-            return install_agent(project=args.project)
+            return install_agent(target=args.target, project=args.project)
         if args.command == "uninstall-agent":
-            return uninstall_agent(project=args.project)
+            return uninstall_agent(target=args.target, project=args.project)
 
         if args.command == "lint":
             manifest = Manifest.from_path(args.manifest)

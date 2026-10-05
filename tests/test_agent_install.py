@@ -171,6 +171,22 @@ class AgentInstallTests(unittest.TestCase):
         settings = self.read_settings(project)
         self.assertEqual([], self.laufgitter_handlers(settings))
 
+    def test_unstoppable_target_install_and_uninstall(self) -> None:
+        install = self.run_cli("install-agent", "--target", "unstoppable")
+        self.assertEqual(0, install.returncode, install.stderr)
+        unstoppable_skill = self.home / ".unstoppable" / "skills" / "laufgitter" / "SKILL.md"
+        self.assertTrue(unstoppable_skill.exists())
+        self.assertEqual((ROOT / ".claude" / "skills" / "laufgitter" / "SKILL.md").read_text(), unstoppable_skill.read_text())
+
+        unstoppable_settings = json.loads((self.home / ".unstoppable" / "settings.json").read_text(encoding="utf-8"))
+        self.assertEqual("Bash", unstoppable_settings["hooks"]["PreToolUse"][0]["matcher"])
+
+        uninstall = self.run_cli("uninstall-agent", "--target", "unstoppable")
+        self.assertEqual(0, uninstall.returncode, uninstall.stderr)
+        self.assertFalse(unstoppable_skill.exists())
+        after_settings = json.loads((self.home / ".unstoppable" / "settings.json").read_text(encoding="utf-8"))
+        self.assertEqual([], self.laufgitter_handlers(after_settings))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

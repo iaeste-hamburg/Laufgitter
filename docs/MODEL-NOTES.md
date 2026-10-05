@@ -217,6 +217,12 @@ checks and raw logs support — no vibes, no worker self-reports.
   ladder now says: audition free models on SHORT mechanical tasks first;
   long-diff review is a proven-tier lane.
 
+## unstoppable (Unstoppable Code CLI engine)
+
+- Configured via `[engines.unstoppable]` in `config.toml`.
+- Worker harness for teams executing swarms with Unstoppable Code's local agent runtime and tool sandbox.
+- Supports per-task model routing via `--model {model}`.
+
 ## Small / flash-class models
 
 - First to choke on long conversational or multi-turn harness tasks —
