@@ -9680,6 +9680,7 @@ def print_steering_notes(manifest: Manifest, config: AppConfig) -> None:
 ENGINE_INSTALL_HINTS = {
     "codex": "install it with `npm install -g @openai/codex` (or `brew install --cask codex`), then run `codex login`",
     "opencode": "install it with `curl -fsSL https://opencode.ai/install | bash`, then run `opencode auth login`",
+    "antigravity": "install it with `curl -fsSL https://antigravity.google/install.sh | bash` or ensure `agy` is on PATH",
 }
 
 

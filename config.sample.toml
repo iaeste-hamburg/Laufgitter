@@ -170,6 +170,32 @@ model_report_regex = "(?m)^model:[ \\t]*([^ \\t\\r\\n]+)[ \\t]*\\r?$"
 # full_access_args = ["--no-sandbox"]
 # token_regex = '"tokens":\{"total":([0-9]+)'
 
+# Google Antigravity / Gemini CLI worker engine (`agy`).
+# Executes autonomous worker tasks headlessly using Gemini models and Google DeepMind
+# agent tooling. Install: curl -fsSL https://antigravity.google/install.sh | bash
+# (or system agy). Headless mode (-p) runs the agentic loop non-interactively.
+# Sandbox mode uses `--sandbox` for terminal execution containment; full access mode
+# uses `--dangerously-skip-permissions` to auto-approve tool execution for headless runs.
+# Models: gemini-3.8-medium, gemini-3.8-high, gemini-2.5-flash (route with the per-task "model" field).
+# Uncomment to enable.
+# [engines.antigravity]
+# bin = "agy"
+# model_default = "gemini-3.8-medium"
+# args_template = [
+#   "{access_args}",
+#   "--model",
+#   "{model}",
+#   "{engine_args}",
+#   "--disable-slash-commands",
+#   "--output-format",
+#   "json",
+#   "-p",
+#   "{spec}",
+# ]
+# sandbox_args = ["--sandbox"]
+# full_access_args = ["--dangerously-skip-permissions"]
+# token_regex = '"total_tokens":\s*([0-9]+)'
+
 # Unstoppable Code integration:
 # Unstoppable Code integrates with Laufgitter as an agent skill consumer
 # (install via `./laufgitter.py install-agent --target unstoppable` into

@@ -304,6 +304,64 @@ class ModelValidationTests(unittest.TestCase):
         preflight_engine_bins(self.manifest(self.base_task(engine="worker")), config)
         preflight_engine_bins(self.manifest(self.base_task(engine="shellworker")), config)
 
+    def test_antigravity_engine_command_composition(self) -> None:
+        engine = EngineConfig(
+            name="antigravity",
+            bin="agy",
+            args_template=(
+                "{access_args}",
+                "--model",
+                "{model}",
+                "{engine_args}",
+                "--disable-slash-commands",
+                "--output-format",
+                "json",
+                "-p",
+                "{spec}",
+            ),
+            sandbox_args=("--sandbox",),
+            full_access_args=("--dangerously-skip-permissions",),
+            token_regex=r'"total_tokens":\s*([0-9]+)',
+            model_default="gemini-3.8-medium",
+        )
+        taskdir = Path("/tmp/taskdir")
+        cmd_sandbox = build_worker_command(
+            engine,
+            taskdir=taskdir,
+            spec="run prompt",
+            full_access=False,
+            engine_args=("--effort", "high"),
+            model="",
+        )
+        self.assertEqual(
+            cmd_sandbox,
+            [
+                "agy",
+                "--sandbox",
+                "--model",
+                "gemini-3.8-medium",
+                "--effort",
+                "high",
+                "--disable-slash-commands",
+                "--output-format",
+                "json",
+                "-p",
+                "run prompt",
+            ],
+        )
+        self.assertEqual("gemini-3.8-medium", effective_model_from_command(cmd_sandbox))
+
+        cmd_full = build_worker_command(
+            engine,
+            taskdir=taskdir,
+            spec="run prompt",
+            full_access=True,
+            model="gemini-2.5-flash",
+        )
+        self.assertIn("--dangerously-skip-permissions", cmd_full)
+        self.assertIn("gemini-2.5-flash", cmd_full)
+        self.assertEqual("gemini-2.5-flash", effective_model_from_command(cmd_full))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
