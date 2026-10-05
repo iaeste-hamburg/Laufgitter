@@ -170,24 +170,13 @@ model_report_regex = "(?m)^model:[ \\t]*([^ \\t\\r\\n]+)[ \\t]*\\r?$"
 # full_access_args = ["--no-sandbox"]
 # token_regex = '"tokens":\{"total":([0-9]+)'
 
-# Unstoppable Code harness / CLI worker engine.
-# Executes autonomous worker tasks inside the Unstoppable runtime environment.
-# [engines.unstoppable]
-# bin = "unstoppable"
-# model_default = "default"
-# args_template = [
-#   "run",
-#   "--cwd",
-#   "{taskdir}",
-#   "--model",
-#   "{model}",
-#   "--non-interactive",
-#   "{engine_args}",
-#   "{spec}",
-# ]
-# sandbox_args = []
-# full_access_args = ["--full-access"]
-# token_regex = '"total_tokens":\s*([0-9]+)'
+# Unstoppable Code integration:
+# Unstoppable Code integrates with Laufgitter as an agent skill consumer
+# (install via `./laufgitter.py install-agent --target unstoppable` into
+# ~/.unstoppable-code/skills/laufgitter or via `--target agents` into ~/.agents/skills/).
+# The Unstoppable Code desktop CLI (`unstoppable-code`) does not provide a direct
+# headless task runner subcommand like `codex exec`, so it is invoked by the user
+# or agent via skill workflows rather than an [engines] worker block.
 
 [artifact]
 # Zero-LLM, self-contained HTML artifacts rendered directly from state — no model calls, no

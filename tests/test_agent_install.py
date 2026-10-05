@@ -174,18 +174,35 @@ class AgentInstallTests(unittest.TestCase):
     def test_unstoppable_target_install_and_uninstall(self) -> None:
         install = self.run_cli("install-agent", "--target", "unstoppable")
         self.assertEqual(0, install.returncode, install.stderr)
-        unstoppable_skill = self.home / ".unstoppable" / "skills" / "laufgitter" / "SKILL.md"
+        unstoppable_skill = self.home / ".unstoppable-code" / "skills" / "laufgitter" / "SKILL.md"
         self.assertTrue(unstoppable_skill.exists())
         self.assertEqual((ROOT / ".claude" / "skills" / "laufgitter" / "SKILL.md").read_text(), unstoppable_skill.read_text())
-
-        unstoppable_settings = json.loads((self.home / ".unstoppable" / "settings.json").read_text(encoding="utf-8"))
-        self.assertEqual("Bash", unstoppable_settings["hooks"]["PreToolUse"][0]["matcher"])
+        # Unstoppable Code should not have Claude settings.json or hooks created
+        self.assertFalse((self.home / ".unstoppable-code" / "settings.json").exists())
 
         uninstall = self.run_cli("uninstall-agent", "--target", "unstoppable")
         self.assertEqual(0, uninstall.returncode, uninstall.stderr)
         self.assertFalse(unstoppable_skill.exists())
-        after_settings = json.loads((self.home / ".unstoppable" / "settings.json").read_text(encoding="utf-8"))
-        self.assertEqual([], self.laufgitter_handlers(after_settings))
+
+    def test_unstoppable_legacy_dir_fallback(self) -> None:
+        legacy_dir = self.home / ".unstoppable"
+        legacy_dir.mkdir(parents=True)
+        install = self.run_cli("install-agent", "--target", "unstoppable")
+        self.assertEqual(0, install.returncode, install.stderr)
+        legacy_skill = legacy_dir / "skills" / "laufgitter" / "SKILL.md"
+        self.assertTrue(legacy_skill.exists())
+
+    def test_agents_target_install_and_uninstall(self) -> None:
+        install = self.run_cli("install-agent", "--target", "agents")
+        self.assertEqual(0, install.returncode, install.stderr)
+        agents_skill = self.home / ".agents" / "skills" / "laufgitter" / "SKILL.md"
+        self.assertTrue(agents_skill.exists())
+        self.assertEqual((ROOT / ".claude" / "skills" / "laufgitter" / "SKILL.md").read_text(), agents_skill.read_text())
+        self.assertFalse((self.home / ".agents" / "skills" / "settings.json").exists())
+
+        uninstall = self.run_cli("uninstall-agent", "--target", "agents")
+        self.assertEqual(0, uninstall.returncode, uninstall.stderr)
+        self.assertFalse(agents_skill.exists())
 
 
 if __name__ == "__main__":

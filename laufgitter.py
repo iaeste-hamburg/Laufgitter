@@ -10454,9 +10454,14 @@ def harness_root(target: str = "claude", project: bool = False) -> Path:
         return (Path.cwd() if project else Path.home()) / ".claude"
     if normalized in {"gemini", "antigravity", "agy"}:
         return (Path.cwd() / ".gemini" / "skills") if project else (Path.home() / ".gemini" / "config" / "skills")
+    if normalized in {"agents", "agent", ".agents"}:
+        return (Path.cwd() / ".agents" / "skills") if project else (Path.home() / ".agents" / "skills")
     if normalized in {"unstoppable", "unstoppablecode", "unstoppable-code"}:
-        return (Path.cwd() if project else Path.home()) / ".unstoppable"
-    raise ValueError(f"unknown agent harness target: '{target}' (supported: claude, gemini, unstoppable)")
+        base = Path.cwd() if project else Path.home()
+        candidate = base / ".unstoppable-code"
+        legacy = base / ".unstoppable"
+        return legacy if (legacy.exists() and not candidate.exists()) else candidate
+    raise ValueError(f"unknown agent harness target: '{target}' (supported: claude, gemini, agents, unstoppable)")
 
 
 def claude_root(project: bool) -> Path:
@@ -10586,16 +10591,18 @@ def install_agent(target: str = "claude", project: bool = False) -> int:
 
     if normalized in {"gemini", "antigravity", "agy"}:
         skill_target = root / "laufgitter-agent" / "SKILL.md"
+    elif normalized in {"agents", "agent", ".agents"}:
+        skill_target = root / "laufgitter" / "SKILL.md"
     else:
         skill_target = root / "skills" / "laufgitter" / "SKILL.md"
 
     skill_target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(skill_source, skill_target)
 
-    # Hooks configuration is supported for claude and unstoppable environments
+    # Hooks configuration is only managed for Claude settings.json
     changed = False
     settings_path: Path | None = None
-    if normalized in {"claude", "claudecode", "unstoppable", "unstoppablecode", "unstoppable-code"}:
+    if normalized in {"claude", "claudecode"}:
         settings_path = root / "settings.json"
         settings = load_settings(settings_path)
         changed |= merge_laufgitter_hook(
@@ -10628,7 +10635,7 @@ def uninstall_agent(target: str = "claude", project: bool = False) -> int:
     normalized = target.strip().lower()
     root = harness_root(normalized, project=project)
     removed_hooks = 0
-    if normalized in {"claude", "claudecode", "unstoppable", "unstoppablecode", "unstoppable-code"}:
+    if normalized in {"claude", "claudecode"}:
         settings_path = root / "settings.json"
         if settings_path.exists():
             settings = load_settings(settings_path)
@@ -10638,6 +10645,8 @@ def uninstall_agent(target: str = "claude", project: bool = False) -> int:
 
     if normalized in {"gemini", "antigravity", "agy"}:
         skill_dir = root / "laufgitter-agent"
+    elif normalized in {"agents", "agent", ".agents"}:
+        skill_dir = root / "laufgitter"
     else:
         skill_dir = root / "skills" / "laufgitter"
 
