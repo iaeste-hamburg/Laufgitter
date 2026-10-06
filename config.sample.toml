@@ -196,6 +196,29 @@ model_report_regex = "(?m)^model:[ \\t]*([^ \\t\\r\\n]+)[ \\t]*\\r?$"
 # full_access_args = ["--dangerously-skip-permissions"]
 # token_regex = '"total_tokens":\s*([0-9]+)'
 
+# Google Antigravity Isolated API-Key Engine (`engines/antigravity-apikey.sh`).
+# Runs agy headlessly with 100% credential isolation from the host user's personal
+# Google OAuth session. Requires an API key passed via GEMINI_API_KEY / ANTIGRAVITY_API_KEY
+# or as an argument ("--api-key", "AIza..."). Refuses to fall back to interactive OAuth.
+# [engines.antigravity_apikey]
+# bin = "engines/antigravity-apikey.sh"
+# model_default = "gemini-3.8-flash-medium"
+# args_template = [
+#   "{access_args}",
+#   "--model",
+#   "{model}",
+#   "{engine_args}",
+#   "--disable-slash-commands",
+#   "--output-format",
+#   "json",
+#   "-p",
+#   "{spec}",
+# ]
+# sandbox_args = ["--sandbox"]
+# full_access_args = ["--dangerously-skip-permissions"]
+# token_regex = '"total_tokens":\s*([0-9]+)'
+
+
 # Unstoppable Code integration:
 # Unstoppable Code integrates with Laufgitter as an agent skill consumer
 # (install via `./laufgitter.py install-agent --target unstoppable` into
