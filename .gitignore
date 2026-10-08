@@ -16,5 +16,7 @@ config.toml
 
 .python-version
 .claude/
+.agents/
+.gemini/
 AGENTS.md
 docs/
